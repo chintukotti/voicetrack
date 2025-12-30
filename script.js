@@ -5,15 +5,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 import { getFirestore, collection, addDoc, doc, setDoc, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 // --- Firebase Configuration ---
-const firebaseConfig = {
-  apiKey: "AIzaSyATJeuo6Dd4bDoAHwkKyXQ729CX9Rk3Ii4",
-  authDomain: "voicetrack-e6b94.firebaseapp.com",
-  projectId: "voicetrack-e6b94",
-  storageBucket: "voicetrack-e6b94.firebasestorage.app",
-  messagingSenderId: "995949766942",
-  appId: "1:995949766942:web:044943a736452f1742010f",
-  measurementId: "G-CVB4Y3FGT7"
-};
+
+-- Firebase Configuration code
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
