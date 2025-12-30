@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Tracker</title>
+    
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" href="https://img.icons8.com/color/96/microphone--v1.png">
+
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- LOGIN OVERLAY -->
+    <!-- CHANGE: Added 'hidden' class so it doesn't flash on refresh -->
+    <div id="loginOverlay" class="login-overlay hidden">
+        <div class="login-card">
+            <h2>Welcome to VoiceTrack</h2>
+            <p>Please sign in to continue</p>
+            <button id="googleLoginBtn" class="btn-google">
+                <i class="fab fa-google"></i> Sign in with Google
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="mainApp" class="container hidden">
+        
+        <!-- MENU BAR -->
+        <div class="menu-bar">
+            <div class="logo-area">
+                <i class="fas fa-microphone-lines"></i> <span>VoiceTrack</span>
+                <!-- Read Only Indicator -->
+                <span id="readOnlyBadge" class="read-only-badge hidden"><i class="fas fa-lock"></i> View Only</span>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="actions-area desktop-actions">
+                <button id="btnNew" class="menu-btn"><i class="fas fa-file-circle-plus"></i> New</button>
+                <button id="btnDownload" class="menu-btn"><i class="fas fa-file-pdf"></i> PDF</button>
+                <button id="btnSave" class="menu-btn primary"><i class="fas fa-save"></i> Save</button>
+                <button id="btnMyFiles" class="menu-btn"><i class="fas fa-folder-open"></i> My Files</button>
+                <div class="divider"></div>
+                <button id="btnLogout" class="menu-btn danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+
+            <!-- Mobile Hamburger -->
+            <div class="mobile-menu-btn">
+                <button id="mobileMenuToggle" class="menu-btn"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown Menu -->
+        <div id="mobileDropdown" class="mobile-dropdown hidden">
+            <button id="btnNewMobile" class="mobile-item"><i class="fas fa-file-circle-plus"></i> New Table</button>
+            <button id="btnDownloadMobile" class="mobile-item"><i class="fas fa-file-pdf"></i> Download PDF</button>
+            <button id="btnSaveMobile" class="mobile-item"><i class="fas fa-save"></i> Save File</button>
+            <button id="btnMyFilesMobile" class="mobile-item"><i class="fas fa-folder-open"></i> My Files</button>
+            <button id="btnLogoutMobile" class="mobile-item danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+
+        <!-- HEADER -->
+        <header class="editable-header">
+            <h1 id="appTitle" contenteditable="true" spellcheck="false">Voice Expense Tracker</h1>
+            <p id="appSubtitle" class="subtitle" contenteditable="true" spellcheck="false">City Name</p>
+        </header>
+
+        <!-- MICROPHONE CONTROLS -->
+        <main class="card">
+            <div class="controls">
+                <button id="micBtn" class="mic-btn" aria-label="Start Recording">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <div id="status" class="status-text">Tap mic to start speaking...</div>
+            </div>
+
+            <div class="transcript-section">
+                <p class="label">Last Recognized:</p>
+                <div id="transcript" class="transcript-area">
+                    <span class="placeholder">Ready to record...</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- EXPENSE TABLE -->
+        <section class="card table-section">
+            <h3>Expense Ledger</h3>
+            
+            <div class="table-container">
+                <table id="expenseTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">S.No</th>
+                            <th>Name</th>
+                            <th>Rupees (₹)</th>
+                            <th>Date & Time</th>
+                            <th id="actionHeader" style="width: 60px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultTableBody">
+                        <!-- Rows injected here -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <!-- CHANGE: Colspan reduced to 2 (S.No + Name) so Value falls in Column 3 (Rupees) -->
+                            <td colspan="2">Active Total</td>
+                            <td id="grandTotal">0</td>
+                            <!-- Empty cell for Date column alignment -->
+                            <td></td>
+                            <td id="actionFooter"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div id="emptyState" class="empty-state">
+                    No entries yet. Start speaking to add data.
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- MODALS -->
+
+    <!-- Filename Modal -->
+    <div id="filenameModal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3>Save Report</h3>
+            <input type="text" id="filenameInput" placeholder="Enter filename" />
+            <div class="modal-actions">
+                <button id="cancelSave" class="menu-btn">Cancel</button>
+                <button id="confirmSave" class="menu-btn primary">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Files Modal -->
+    <div id="filesModal" class="modal-overlay hidden">
+        <div class="modal-box wide">
+            <div class="modal-header">
+                <h3>My Saved Files</h3>
+                <button id="closeFilesModal" class="menu-btn danger"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="filesList" class="files-list">
+                <p class="text-center">Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Firebase SDK -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>
